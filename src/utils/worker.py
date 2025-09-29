@@ -1,6 +1,7 @@
 import os
 from asyncio import Lock, sleep
 from httpx import AsyncHTTPTransport, Timeout
+from httpx_socks import AsyncProxyTransport
 from twikit import Client
 from config import FOLLOW, FOLLOW_AFTER_DM, TIMEOUT_SLEEP, TIMEOUT_WORK
 from typed.Account import Account
@@ -18,9 +19,15 @@ class Worker:
 
     def __init__(self, account: Account) -> None:
         transport = AsyncHTTPTransport(retries=3)
+        proxy_url: str | None = account.proxy.url
+
+        if account.proxy.scheme.lower().startswith("socks"):
+            transport = AsyncProxyTransport.from_url(account.proxy.url)
+            proxy_url = None
+
         client = Client(
             language="en-US",
-            proxy=account.proxy.url,
+            proxy=proxy_url,
             user_agent=account.user_agent,
             transport=transport,
             verify=False,
