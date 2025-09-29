@@ -1,6 +1,7 @@
 import os
 from asyncio import Lock, sleep
 from httpx import AsyncHTTPTransport, Timeout
+from httpx._utils import URLPattern
 from httpx_socks import AsyncProxyTransport
 from twikit import Client
 from config import FOLLOW, FOLLOW_AFTER_DM, TIMEOUT_SLEEP, TIMEOUT_WORK
@@ -34,6 +35,10 @@ class Worker:
             timeout=Timeout(30.0, connect=30),
         )
         self._client = client
+
+        if isinstance(transport, AsyncProxyTransport):
+            client.http._transport = transport
+            client.http._mounts = {URLPattern("all://"): transport}
         self.account = account
         self._lock = Lock()
         self._skip = False
