@@ -1,0 +1,14 @@
+[project]
+name = "twitter-spammer-recode"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "lxml>=5.3.0",
+    "requests>=2.2.0",
+    "twikit>=2.3.1",
+    "httpx-socks>=0.10.0",
+]
+
+[tool.uv.sources]
